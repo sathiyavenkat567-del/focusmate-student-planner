@@ -4,60 +4,359 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FocusMate</title>
+  <title>FocusMate - Smart Student Task Planner</title>
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
+      padding: 20px;
       font-family: Arial, sans-serif;
-      background: #eef2ff;
-      padding: 25px;
-      text-align: center;
+      background: linear-gradient(135deg, #e0e7ff, #f0fdfa);
+      color: #1e293b;
+      min-height: 100vh;
     }
-    .box {
+
+    .container {
+      max-width: 650px;
+      margin: 30px auto;
       background: white;
-      padding: 25px;
-      border-radius: 15px;
-      max-width: 500px;
-      margin: auto;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
     }
-    input, button {
+
+    h1 {
+      text-align: center;
+      color: #4f46e5;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 16px 0 8px;
+    }
+
+    input, select {
+      width: 100%;
       padding: 12px;
-      margin: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 13px 18px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .create-btn {
+      width: 100%;
+      margin-top: 20px;
+      background: #4f46e5;
+      color: white;
+    }
+
+    .create-btn:hover {
+      background: #3730a3;
+    }
+
+    #message {
+      margin-top: 14px;
+      color: #b91c1c;
+      font-weight: bold;
+    }
+
+    #planSection {
+      display: none;
+      margin-top: 28px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 20px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 13px;
+      margin: 10px 0;
+      background: #f8fafc;
       border-radius: 8px;
     }
-    button {
-      background: #5555dd;
-      color: white;
-      border: 0;
+
+    .step input {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    .step label {
+      margin: 0;
+      font-weight: normal;
+      line-height: 1.5;
+      cursor: pointer;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: #16a34a;
+      transition: width 0.3s;
+    }
+
+    #progressText {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .reset-btn {
+      background: #e2e8f0;
+      color: #1e293b;
+      margin-top: 18px;
+      width: 100%;
+    }
+
+    footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 13px;
+      margin-top: 24px;
     }
   </style>
 </head>
+
 <body>
-  <div class="box">
+  <main class="container">
     <h1>FocusMate</h1>
-    <p>Break big tasks into small steps!</p>
-    <input id="task" placeholder="Enter your task">
-    <button onclick="createPlan()">Create Plan</button>
-    <ul id="steps"></ul>
-  </div>
+    <p class="subtitle">Break big tasks into small steps!</p>
+
+    <form id="plannerForm">
+      <label for="taskType">Choose your task category</label>
+      <select id="taskType">
+        <option value="study">Study</option>
+        <option value="assignment">Assignment</option>
+        <option value="coding">Coding</option>
+        <option value="project">Project</option>
+        <option value="personal">Personal task</option>
+      </select>
+
+      <label for="taskName">Plan your task</label>
+      <input
+        id="taskName"
+        type="text"
+        placeholder="e.g. Prepare for my electronics exam"
+        required
+      >
+
+      <label for="availableTime">Available time</label>
+      <select id="availableTime">
+        <option value="15">15 minutes</option>
+        <option value="30" selected>30 minutes</option>
+        <option value="60">1 hour</option>
+        <option value="120">2 hours</option>
+      </select>
+
+      <label for="priority">Task priority</label>
+      <select id="priority">
+        <option value="high">High</option>
+        <option value="medium" selected>Medium</option>
+        <option value="low">Low</option>
+      </select>
+
+      <button class="create-btn" type="submit">Create Plan</button>
+      <p id="message" role="alert"></p>
+    </form>
+
+    <section id="planSection">
+      <h2 id="planTitle">Your Task Plan</h2>
+      <p id="planDetails"></p>
+
+      <div id="stepsContainer"></div>
+
+      <h3>Your Progress</h3>
+      <div
+        class="progress-track"
+        role="progressbar"
+        aria-label="Task completion"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+        id="progressTrack"
+      >
+        <div id="progressBar"></div>
+      </div>
+      <p id="progressText">0% completed</p>
+
+      <button class="reset-btn" type="button" id="resetBtn">
+        Create Another Plan
+      </button>
+    </section>
+
+    <footer>
+      FocusMate — Plan small. Focus better. Achieve more.
+    </footer>
+  </main>
+
   <script>
-    function createPlan() {
-      const task = document.getElementById("task").value.trim();
-      const steps = document.getElementById("steps");
-      if (!task) {
-        alert("Please enter a task!");
+    const form = document.getElementById("plannerForm");
+    const taskName = document.getElementById("taskName");
+    const taskType = document.getElementById("taskType");
+    const availableTime = document.getElementById("availableTime");
+    const priority = document.getElementById("priority");
+    const message = document.getElementById("message");
+    const planSection = document.getElementById("planSection");
+    const stepsContainer = document.getElementById("stepsContainer");
+    const planTitle = document.getElementById("planTitle");
+    const planDetails = document.getElementById("planDetails");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const progressTrack = document.getElementById("progressTrack");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function createSteps(category, minutes) {
+      const templates = {
+        study: [
+          "Gather your notes and learning materials.",
+          "Review the main concepts and definitions.",
+          "Practise questions related to the topic.",
+          "Summarize what you learned."
+        ],
+        assignment: [
+          "Read the assignment question carefully.",
+          "Collect the required information.",
+          "Write the main answer or solution.",
+          "Review and correct your work."
+        ],
+        coding: [
+          "Understand the problem and expected output.",
+          "Write the basic code structure.",
+          "Run the code and test examples.",
+          "Fix errors and review the solution."
+        ],
+        project: [
+          "Define the project goal.",
+          "List the materials and resources needed.",
+          "Complete one small project component.",
+          "Test your work and note improvements."
+        ],
+        personal: [
+          "Identify the first action to take.",
+          "Prepare what you need.",
+          "Complete the main task.",
+          "Review what remains to be done."
+        ]
+      };
+
+      const steps = templates[category] || templates.study;
+      const count = minutes === 15 ? 2 : minutes === 30 ? 3 : 4;
+
+      return steps.slice(0, count).map((text, index) => ({
+        text: text,
+        minutes: Math.max(1, Math.round(minutes / count))
+      }));
+    }
+
+    function updateProgress() {
+      const checkboxes = stepsContainer.querySelectorAll(
+        'input[type="checkbox"]'
+      );
+      const completed = Array.from(checkboxes).filter(
+        checkbox => checkbox.checked
+      ).length;
+
+      const percentage = checkboxes.length
+        ? Math.round((completed / checkboxes.length) * 100)
+        : 0;
+
+      progressBar.style.width = percentage + "%";
+      progressText.textContent =
+        percentage + "% completed (" + completed +
+        " of " + checkboxes.length + " steps)";
+
+      progressTrack.setAttribute("aria-valuenow", percentage);
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      message.textContent = "";
+
+      const name = taskName.value.trim();
+
+      if (!name) {
+        message.textContent = "Please enter your task first.";
+        taskName.focus();
         return;
       }
-      steps.innerHTML = "";
-      ["Plan your task", "Work for 15 minutes",
-       "Review your progress"].forEach(step => {
-        const li = document.createElement("li");
-        const check = document.createElement("input");
-        check.type = "checkbox";
-        li.appendChild(check);
-        li.appendChild(document.createTextNode(step));
-        steps.appendChild(li);
+
+      const minutes = Number(availableTime.value);
+      const steps = createSteps(taskType.value, minutes);
+      const priorityLabel = priority.options[priority.selectedIndex].text;
+
+      planTitle.textContent = "Your Plan: " + name;
+      planDetails.textContent =
+        "Priority: " + priorityLabel +
+        " | Available time: " + minutes + " minutes";
+
+      stepsContainer.replaceChildren();
+
+      steps.forEach(function (step, index) {
+        const row = document.createElement("div");
+        row.className = "step";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = "step-" + index;
+        checkbox.addEventListener("change", updateProgress);
+
+        const label = document.createElement("label");
+        label.htmlFor = checkbox.id;
+        label.textContent =
+          step.text + " (about " + step.minutes + " min)";
+
+        row.appendChild(checkbox);
+        row.appendChild(label);
+        stepsContainer.appendChild(row);
       });
-    }
+
+      planSection.style.display = "block";
+      updateProgress();
+      planSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    resetBtn.addEventListener("click", function () {
+      form.reset();
+      stepsContainer.replaceChildren();
+      planSection.style.display = "none";
+      message.textContent = "";
+      taskName.focus();
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
   </script>
 </body>
 </html>
