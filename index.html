@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusMate</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2ff;
+      padding: 25px;
+      text-align: center;
+    }
+    .box {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      max-width: 500px;
+      margin: auto;
+    }
+    input, button {
+      padding: 12px;
+      margin: 8px;
+      border-radius: 8px;
+    }
+    button {
+      background: #5555dd;
+      color: white;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>FocusMate</h1>
+    <p>Break big tasks into small steps!</p>
+    <input id="task" placeholder="Enter your task">
+    <button onclick="createPlan()">Create Plan</button>
+    <ul id="steps"></ul>
+  </div>
+  <script>
+    function createPlan() {
+      const task = document.getElementById("task").value.trim();
+      const steps = document.getElementById("steps");
+      if (!task) {
+        alert("Please enter a task!");
+        return;
+      }
+      steps.innerHTML = "";
+      ["Plan your task", "Work for 15 minutes",
+       "Review your progress"].forEach(step => {
+        const li = document.createElement("li");
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        li.appendChild(check);
+        li.appendChild(document.createTextNode(step));
+        steps.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
